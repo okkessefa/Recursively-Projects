@@ -1,2 +1,12 @@
-Graph-Projects.txt
+# C++ / build artifacts
 *.exe
+*.obj
+*.o
+*.out
+*.log
+*.pdb
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
