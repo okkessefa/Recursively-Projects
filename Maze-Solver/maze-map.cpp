@@ -1,7 +1,6 @@
 #include <iostream>   // cout/cerr: print to console
 #include <vector>     // std::vector to store the 2D grid
 #include <string>     // std::string to hold each ASCII row
-using namespace std;
 
 // Represents a maze cell.
 struct Node {
@@ -38,7 +37,7 @@ static inline bool is_open_char(char ch) { return ch == ' ' || ch == '*'; }
  * Returns:
  *   true on success; false on detectable format mismatch.
  */
-bool import_ascii_min(vector<string> a, vector<vector<Node>>& g, int& R, int& C) {
+bool import_ascii_min(std::vector<std::string> a, std::vector<std::vector<Node>>& g, int& R, int& C) {
     // 0) Trim leading rows that are entirely spaces (your example starts with one).
     while (!a.empty()) {
         bool all_spaces = true;
@@ -47,25 +46,25 @@ bool import_ascii_min(vector<string> a, vector<vector<Node>>& g, int& R, int& C)
         else break;
     }
     // After trimming, we need at least the top border + one row.
-    if (a.size() < 2) { cerr << "Input is too short.\n"; return false; }
+    if (a.size() < 2) { std::cerr << "Input is too short.\n"; return false; }
 
     // 1) Derive dimensions from the top border (row 0).
     // Format guarantee: width = 1 + 2*C (leading space, then two chars per cell).
-    const string& top = a[0];
-    if (top.size() < 3) { cerr << "Top border is too short.\n"; return false; }
+    const std::string& top = a[0];
+    if (top.size() < 3) { std::cerr << "Top border is too short.\n"; return false; }
     C = (int(top.size()) - 1) / 2;         // number of columns (cells)
     R = (int)a.size() - 1;                 // number of rows (cells) = remaining lines
 
     // Verify each line has the expected width.
     for (int i = 1; i <= R; ++i) {
         if ((int)a[i].size() < 1 + 2*C) {
-            cerr << "Row width mismatch: line " << i << ".\n";
+            std::cerr << "Row width mismatch: line " << i << ".\n";
             return false;
         }
     }
 
     // 2) Allocate the R x C grid of Nodes (value objects; addresses remain stable).
-    g.assign(R, vector<Node>(C));
+    g.assign(R, std::vector<Node>(C));
     // Initialize each node’s coordinates (r,c).
     for (int i = 0; i < R; ++i)
         for (int j = 0; j < C; ++j) { g[i][j].r = i; g[i][j].c = j; }
@@ -86,7 +85,7 @@ bool import_ascii_min(vector<string> a, vector<vector<Node>>& g, int& R, int& C)
     //   west(i,j)  = east(i,j-1)  (if j>0)
     //   north(i,j) = south(i-1,j) (if i>0)
     for (int i = 0; i < R; ++i) {
-        const string& line = a[i+1];
+        const std::string& line = a[i+1];
 
         // WEST boundary of the first cell in this row:
         g[i][0].W = (line[0] == '|');
@@ -128,31 +127,31 @@ bool import_ascii_min(vector<string> a, vector<vector<Node>>& g, int& R, int& C)
  * Purpose: Re-render the maze in the same ASCII format but WITHOUT any '*'.
  * Uses walls from g (N,S,E,W). This lets the user see a clean maze.
  */
-void print_clean_ascii_min(const vector<vector<Node>>& g, int R, int C) {
+void print_clean_ascii_min(const std::vector<std::vector<Node>>& g, int R, int C) {
     // Top border: print one leading space, then for each cell
     // print " _" if there is a north wall, otherwise "  ".
-    cout << " ";
-    for (int j = 0; j < C; ++j) cout << (g[0][j].N ? " _" : "  ");
-    cout << "\n";
+    std::cout << " ";
+    for (int j = 0; j < C; ++j) std::cout << (g[0][j].N ? " _" : "  ");
+    std::cout << "\n";
 
     // Each maze row:
     for (int i = 0; i < R; ++i) {
         // Left boundary: print '|' if the west wall of (i,0) exists, else space.
-        cout << (g[i][0].W ? "|" : " ");
+        std::cout << (g[i][0].W ? "|" : " ");
         // For each cell, print two characters: first the south symbol, then the east symbol.
         for (int j = 0; j < C; ++j) {
-            cout << (g[i][j].S ? '_' : ' ')    // '_' if south wall, else space
+            std::cout << (g[i][j].S ? '_' : ' ')    // '_' if south wall, else space
                  << (g[i][j].E ? '|' : ' ');   // '|' if east wall, else space
         }
-        cout << "\n";
+        std::cout << "\n";
     }
 }
 
-void maze_solver(const vector<vector<Node>>& g, int R, int C);
+void maze_solver(const std::vector<std::vector<Node>>& g, int R, int C);
 
 int main() {
     // Example input: your 15x27 maze with an initial line of spaces.
-    const vector<string> ascii = {
+    const std::vector<std::string> ascii = {
         "-------------------------------------------------------",
         "   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         "|_ _ _ _ _ *| |  _ _ _   _ _|  _ _ _ * *|* _ _ _ _ *| |",
@@ -172,7 +171,7 @@ int main() {
         "|_ _ _ _|_ _ _|_ _ _|_ _ _ _ _ _ _|_ _ _|_ _ _ _|_ _ *|"
     };
 
-    vector<vector<Node>> g; // output grid
+    std::vector<std::vector<Node>> g; // output grid
     int R = 0, C = 0;       // dimensions (rows, columns)
 
     // Build the graph from ASCII; exit on parse error.
