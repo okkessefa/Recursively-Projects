@@ -148,6 +148,8 @@ void print_clean_ascii_min(const vector<vector<Node>>& g, int R, int C) {
     }
 }
 
+void maze_solver(const vector<vector<Node>>& g, int R, int C);
+
 int main() {
     // Example input: your 15x27 maze with an initial line of spaces.
     const vector<string> ascii = {
