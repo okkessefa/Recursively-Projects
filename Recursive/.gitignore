@@ -1,0 +1,39 @@
+# Build outputs
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# Debug & coverage
+*.pdb
+*.ilk
+*.gcno
+*.gcda
+*.gcov
+
+# CMake
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/build/
+/build-*/
+
+# VS Code & IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+*.userossc
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
