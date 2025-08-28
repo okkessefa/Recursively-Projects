@@ -1,6 +1,7 @@
 #include <iostream>   // cout/cerr: print to console
 #include <vector>     // std::vector to store the 2D grid
 #include <string>     // std::string to hold each ASCII row
+#include <chrono>
 
 // Represents a maze cell.
 struct Node {
@@ -147,7 +148,30 @@ void print_clean_ascii_min(const std::vector<std::vector<Node>>& g, int R, int C
     }
 }
 
-void maze_solver(const std::vector<std::vector<Node>>& g, int R, int C);
+bool maze_solver_rec(const std::vector<std::vector<Node>>& g, int R, int C, int r, int c, std::vector<std::vector<bool>>& visited){
+    // Hit the base case
+    if(r<0 || r>R || c<0 || c>C) return false;    
+    if (visited[r][c] ) return false; 
+    if( r == R-1 && c == C-1) return true;
+    // do something to divide the problem into sub-problems
+
+
+    visited[r][c] = true;
+    // Check if the wa is exist
+    if( !g[r][c].S && maze_solver_rec(g, R, C, r+1, c, visited)); return true;  // down
+    if( !g[r][c].E  && maze_solver_rec(g, R, C, r, c+1, visited)); return true;  // right
+    if( !g[r][c].N  && maze_solver_rec(g, R, C, r-1, c, visited)); return true;  // up
+    if( !g[r][c].W  && maze_solver_rec(g, R, C, r, c-1, visited)); return true;  // left
+
+    // Additional base case if outhor is not found
+    return false;
+
+}
+
+bool maze_solver(const std::vector<std::vector<Node>>& g, int R, int C){
+    std::vector<std::vector<bool>> visited(R, std::vector<bool>(C, false));
+    return maze_solver_rec(g, R, C, 0, 0, visited);
+}
 
 int main() {
     // Example input: your 15x27 maze with an initial line of spaces.
@@ -179,6 +203,14 @@ int main() {
 
     // Reprint the maze without stars so the user sees a clean layout.
     print_clean_ascii_min(g, R, C);
+
+
+    auto start = std::chrono::high_resolution_clock::now();
+    bool solved = maze_solver(g,R,C);
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop-start);
+    std::cout << (solved ? ("Maze solver took " + std::to_string(duration.count()) + "microSecond\n") : "Maze could not be solved.\n");
 
     return 0;
 }
